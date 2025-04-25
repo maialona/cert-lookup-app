@@ -10,17 +10,19 @@
         padding: 0;
         box-sizing: border-box;
       }
-      body,
-      html {
+      html,
+      body {
         height: 100%;
         font-family: "Arial", sans-serif;
+        background-color: #fefefe;
+        overflow-x: hidden;
       }
 
       .container {
-        background: rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.9);
         padding: 2rem;
         border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 400px;
         text-align: center;
@@ -62,6 +64,7 @@
       #result {
         margin-top: 1rem;
         font-size: 1rem;
+        position: relative;
       }
 
       a {
@@ -72,10 +75,10 @@
 
       p {
         font-size: 10pt;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
+        color: #333;
       }
 
-      /* 成功文字動畫 */
       @keyframes sparkle {
         0% {
           transform: scale(1);
@@ -97,10 +100,54 @@
         margin-bottom: 0.5rem;
         animation: sparkle 0.8s ease-in-out;
       }
+
+      /* 愛心動畫 */
+      .heart {
+        position: fixed;
+        bottom: 0;
+        font-size: 24px;
+        animation: floatUp 2s ease-in-out forwards;
+        opacity: 0;
+        z-index: 20;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-300px);
+          opacity: 0;
+        }
+      }
+
+      /* 煙火動畫 */
+      .firework {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background-color: transparent;
+        border-radius: 50%;
+        animation: explode 1s ease-out forwards;
+        z-index: 50;
+      }
+
+      @keyframes explode {
+        0% {
+          box-shadow: 0 0 0 transparent;
+          opacity: 1;
+        }
+        100% {
+          box-shadow: 0 0 #ff0000, 30px 0 #ff8000, -30px 0 #ffff00,
+            0 30px #00ff00, 0 -30px #00ffff, 21px 21px #0000ff,
+            -21px 21px #8000ff, 21px -21px #ff00ff, -21px -21px #ff0080;
+          opacity: 0;
+        }
+      }
     </style>
   </head>
   <body>
-    <!-- 查詢介面 -->
     <div class="container">
       <h2>學員證書查詢</h2>
       <p>課程：原住民族權利促進運動及社會與健康的不均等</p>
@@ -119,13 +166,37 @@
         if (data.success) {
           resultDiv.innerHTML = `
           <p class="flash-text">
-            哇～你好棒呦！恭喜你又獲得積分，繼續努力上課吧！
+            哇～帥哥美女你好棒呦！恭喜你又獲得積分了，再繼續努力吧～😉
           </p>
           <a href="${data.url}" target="_blank">下載 ${data.name} 的證書</a>
         `;
+          for (let i = 0; i < 3; i++) {
+            setTimeout(() => launchFirework(), i * 200); // 每 0.2 秒一發煙火
+          }
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => floatHeart(), i * 200); // 每 0.2 秒飄一顆愛心
+          }
         } else {
           resultDiv.textContent = "查無證書，請確認身分證字號是否正確。";
         }
+      }
+
+      function launchFirework() {
+        const fw = document.createElement("div");
+        fw.className = "firework";
+        fw.style.top = Math.random() * window.innerHeight * 0.6 + "px";
+        fw.style.left = Math.random() * window.innerWidth + "px";
+        document.body.appendChild(fw);
+        setTimeout(() => fw.remove(), 1000);
+      }
+
+      function floatHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.textContent = "💖";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 2000);
       }
     </script>
   </body>
